@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0"
+    />
+    <!-- 引用有字库站酷高端黑字体 -->
+    <link
+      href="http://cdn.repository.webfont.com/webfonts/nomal/135621/46969/5e3024eaf629d810708c2ad6.css"
+      rel="stylesheet"
+      type="text/css"
+    />
+    <title>Document</title>
+    <style>* {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "huxiaobo-gdh1e91397a5f211c5",
+          "PingFang SC", "Microsoft Yahei", sans-serif;
+      }
+      
+      main {
+        background: linear-gradient(to top, #a8edea 0%, #fed6e3 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+}
+      
+      h1 {
+        color: #000000;
+        font-size: 5em;
+        font-weight: 300;
+      }
+      
+      span.mark {
+        border-right: 2px solid white;
+        animation: blink 0.6s step-end infinite;
+      }
+      
+      @keyframes blink {
+        from,
+        to {
+          border-color: transparent;
+        }
+        50% {
+          border-color: white;
+        }
+      }</style>
+  </head>
+  <body>
+    <!-- 定位文本到浏览器中央 -->
+    <main>
+      <!-- 文字容器，统一由h1控制 -->
+      <h1>
+        <!-- 使用span显示文字, data-text为Json格式的数组 -->
+        <span
+          id="text"
+          data-text='["我是王长旭", "我是兖矿一中的一名学生", "我热爱物理","我是大学霸","我的QQ号是230299514."]'
+        ></span>
+        <!-- 闪烁的光标 -->
+        <span class="mark"></span>
+      </h1>
+    </main>
+
+    <script>// 获取显示文字的span元素
+        const textEl = document.querySelector("#text");
+        // 获取并解析要展示的文本数组
+        const texts = JSON.parse(
+          textEl.getAttribute("data-text")
+        );
+        
+        // 当前显示文本数组中的第几个
+        let index = 0;
+        // 当前显示第几个字
+        let charIndex = 0;
+        // 每个字显示间隔默认是500毫秒
+        let delta = 500;
+        
+        // 记录动画执行开始时间
+        let start = null;
+        // 是否为删除动画
+        let isDeleting = false;
+        
+        // 动画回调函数
+        function type(time) {
+          window.requestAnimationFrame(type);
+          // 初始化开始时间
+          if (!start) start = time;
+          // 获取时间间隔
+          let progress = time - start;
+          // 每隔一定的时间，打印出一个新的字符
+          if (progress > delta) {
+            // 获取完整的字符
+            let text = texts[index];
+            // 如果是打字效果
+            if (!isDeleting) {
+              // 给展示文字的span新增一个字符，使用innerHTML来替换，charIndex自增1，然后返回新的字符串子串
+              textEl.innerHTML = text.slice(
+                0,
+                ++charIndex
+              );
+              // 每个字符打印出来的速度不一样，模仿人工打字的速度
+              delta = 500 - Math.random() * 400;
+            } else {
+              // 如果是删除效果，则把文字一个一个减掉
+              textEl.innerHTML = text.slice(
+                0,
+                charIndex--
+              );
+            }
+            // 把star更新为当前时间，进行下一个周期
+            start = time;
+        
+            // 如果文字已经全部打印完毕
+            if (charIndex === text.length) {
+              // 下次开始删除文字
+              isDeleting = true;
+              // 删除文字的间隔为200毫秒
+              delta = 200;
+              // 额外等待1.2秒后再删除
+              start = time + 1200;
+            }
+        
+            // 如果文字删除完毕
+            if (charIndex < 0) {
+              isDeleting = false;
+              // 额外增加200毫秒延迟
+              start = time + 200;
+              // 把index移动到下一个文本，并且在文本数组元素个数中循环
+              index = ++index % texts.length;
+            }
+          }
+        }
+        
+        window.requestAnimationFrame(type);
+        </script> 
+        <div style="position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); padding: 10px;">
+            <a href="index.html" target="_blank">
+              <button style="background-image: linear-gradient(to top, #a8edea 0%, #fed6e3 100%); color: white; padding: 15px 32px; text-align: center; text-decoration: none; display: inline-block; font-size: 16px;">跳转链接</button>
+            </a>
+          </div>
+
+</body>
+
+</html>
